@@ -17,6 +17,7 @@ import json
 from urllib2 import Request
 from urllib2 import urlopen
 import pytz
+import os
 
 dynamodb = boto3.resource('dynamodb')
 ec2_client = boto3.client('ec2')
@@ -205,7 +206,7 @@ def tag_snapshots(ec2, snapshot_list):
 def lambda_handler(event, context):
     # Reading output items from the CF stack
     outputs = {}
-    stack_name = context.invoked_function_arn.split(':')[6].rsplit('-', 2)[0]
+    stack_name = stack_name = os.environ['StackName']
     response = cf_client.describe_stacks(StackName=stack_name)
     for e in response['Stacks'][0]['Outputs']:
         outputs[e['OutputKey']] = e['OutputValue']
